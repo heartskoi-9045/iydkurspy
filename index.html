@@ -87,10 +87,25 @@ body {
 }
   
 
-/* 커스텀 커서 */
-html, body, *, *:hover {
-  cursor: url("./point.png") 0 0, pointer !important;
+/* 기본 커서 숨기기 */
+html, body, * {
+  cursor: none !important;
 }
+
+/* 커스텀 커서 */
+#customCursor {
+  position: fixed;
+  width: 128px;
+  height: 36px;
+  background: url("./point.png") no-repeat center;
+  background-size: contain;
+  pointer-events: none;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  transform: translate(0, 0);
+}
+
 
 </style>
 </head>
