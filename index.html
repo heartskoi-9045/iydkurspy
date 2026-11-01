@@ -2,70 +2,161 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>모르면 간첩</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모르면 간첩</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      background: black;
-      overflow: hidden;
-    }
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: Arial, "Apple SD Gothic Neo", sans-serif;
+}
 
-    .screen {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      display: none;
-    }
+/* 첫 번째 화면 */
+#screen1 {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    .screen.active {
-      display: block;
-    }
+#screen1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-    .screen img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+/* 이미지 중앙 클릭 영역 */
+#clickArea {
+  position: absolute;
+  left: 39%;
+  top: 15%;
+  width: 24%;
+  height: 58%;
+  cursor: pointer;
+}
 
-    /* 첫 번째 화면 중앙 클릭 영역 */
-    .click-area {
-      position: absolute;
-      top: 15%;
-      left: 38%;
-      width: 27%;
-      height: 58%;
-      cursor: pointer;
-    }
-  </style>
+/* 두 번째 화면 */
+#screen2 {
+  display: none;
+  min-height: 100vh;
+  padding: 5.5% 5.2%;
+  background: #000;
+}
+
+#message {
+  font-size: clamp(14px, 1.85vw, 30px);
+  font-weight: 500;
+  line-height: 1.48;
+  letter-spacing: 0.01em;
+  white-space: pre-wrap;
+}
+
+.pink {
+  color: #f02cdb;
+}
+
+.white {
+  color: #ffffff;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: #f02cdb;
+  vertical-align: -0.12em;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- 첫 번째 화면 -->
-  <div class="screen active" id="screen1">
-    <img src="main.jpg" alt="모르면 간첩 메인 화면">
-    <div class="click-area" onclick="nextScreen()"></div>
-  </div>
+<!-- 첫 번째 화면 -->
+<div id="screen1">
+  <img src="main.jpg" alt="모르면 간첩">
+  <div id="clickArea" onclick="startTyping()"></div>
+</div>
 
-  <!-- 두 번째 화면 -->
-  <div class="screen" id="screen2">
-    <img src="second.jpg" alt="요원 안내 화면">
-  </div>
+<!-- 두 번째 화면 -->
+<div id="screen2">
+  <div id="message"></div>
+</div>
 
-  <script>
-    function nextScreen() {
-      document.getElementById("screen1").classList.remove("active");
-      document.getElementById("screen2").classList.add("active");
+<script>
+const messages = [
+  { text: "요원님, 좋은 아침입니다.\n\n", color: "pink" },
+
+  { text: "대한민국(Republic of Korea)에 파견될 준비는 잘 하고 계신가요?\n", color: "pink" },
+
+  { text: "당신의 수준이라면 이미 한국어는 원어민과 같이 구사할 수 있을 거라 믿습니다.\n", color: "pink" },
+
+  { text: "이제부터는 완전히 한국인으로 위장하기 위한 정보를 습득할 시간입니다.\n", color: "pink" },
+
+  { text: "한국에서는, 모두가 알 만한 것을 모르는 사람을 쉽게 ‘간첩’으로 몰아가곤 합니다.\n", color: "white" },
+
+  { text: "절대 우리의 정체를 들키지 마세요.\n\n\n", color: "white" },
+
+  { text: "*\n", color: "pink" },
+
+  { text: "아, 가장 기본이지만 신분 설정은 가장 중요하니 다시 한 번 확인하세요.\n\n", color: "pink" },
+
+  { text: "김민지 (2004.12.25), 서울\n\n", color: "pink" },
+
+  { text: "한국의 크리스마스는 공휴일이랍니다.", color: "pink" }
+];
+
+let started = false;
+
+function startTyping() {
+  if (started) return;
+  started = true;
+
+  document.getElementById("screen1").style.display = "none";
+  document.getElementById("screen2").style.display = "block";
+
+  typeMessages();
+}
+
+async function typeMessages() {
+  const container = document.getElementById("message");
+
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  for (const message of messages) {
+    const span = document.createElement("span");
+    span.className = message.color;
+    container.appendChild(span);
+    container.appendChild(cursor);
+
+    for (const char of message.text) {
+      span.textContent += char;
+
+      await new Promise(resolve =>
+        setTimeout(resolve, char === "\n" ? 180 : 42)
+      );
     }
-  </script>
+
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+
+  cursor.remove();
+}
+</script>
 
 </body>
 </html>
