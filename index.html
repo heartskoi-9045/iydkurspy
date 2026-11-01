@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>모르면 간첩</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      overflow: hidden;
+    }
+
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 첫 번째 화면 중앙 클릭 영역 */
+    .click-area {
+      position: absolute;
+      top: 15%;
+      left: 38%;
+      width: 27%;
+      height: 58%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 첫 번째 화면 -->
+  <div class="screen active" id="screen1">
+    <img src="main.jpg" alt="모르면 간첩 메인 화면">
+    <div class="click-area" onclick="nextScreen()"></div>
+  </div>
+
+  <!-- 두 번째 화면 -->
+  <div class="screen" id="screen2">
+    <img src="second.jpg" alt="요원 안내 화면">
+  </div>
+
+  <script>
+    function nextScreen() {
+      document.getElementById("screen1").classList.remove("active");
+      document.getElementById("screen2").classList.add("active");
+    }
+  </script>
+
+</body>
+</html>
