@@ -7,12 +7,11 @@
 <title>모르면 간첩</title>
 
 <style>
-
 * {
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
   background: #000;
   color: #fff;
@@ -21,7 +20,7 @@ body {
 
 /* 첫 번째 화면 */
 #screen1 {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   position: relative;
   display: flex;
@@ -35,14 +34,12 @@ body {
   object-fit: contain;
 }
 
-/* 이미지 중앙 클릭 영역 */
 #clickArea {
   position: absolute;
   left: 39%;
   top: 15%;
   width: 24%;
   height: 58%;
-  cursor: pointer;
 }
 
 /* 두 번째 화면 */
@@ -65,18 +62,17 @@ body {
   color: #f02cdb;
 }
 
-
 .white {
-  color: #ffffff;
+  color: #fff;
   text-decoration: line-through;
-  text-decoration-color: #ffffff;
+  text-decoration-color: #fff;
   text-decoration-thickness: 1.5px;
 }
 
-  .white2 {
-  color: #ffffff;
-  }
-  
+.white2 {
+  color: #fff;
+}
+
 .cursor {
   display: inline-block;
   width: 0.5em;
@@ -89,67 +85,36 @@ body {
 @keyframes blink {
   50% { opacity: 0; }
 }
-  
 
-/* 기본 커서 숨기기 */
-html, body, * {
-  cursor: none !important;
-}
-
-
-/* 이미지 커서 */
-#customCursor {
-  position: fixed;
-  width: 128px;
-  height: 36px;
-  background-image: url("./point.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 128px 36px;
-  pointer-events: none;
-  z-index: 999999;
-  left: 0;
-  top: 0;
-  display: block;
-  transform: translate(-50%, -50%);
-}
-
-  
-/* 세 번째 페이지 */
+/* 세 번째 화면 */
 #screen3 {
   display: none;
-  background: #f345ed;
   min-height: 100vh;
-  color: #000;
+  background: #f345ed;
 }
 
-/* 상단 안내문 */
-#screen3Header {
-  padding: 45px 5.5% 10px;
-  font-size: clamp(13px, 1.5vw, 22px);
-  font-weight: bold;
-  line-height: 1.5;
-}
-
-/* 도형이 배치되는 공간 */
-#shapeContainer {
+/* 전체 배경 이미지와 클릭 영역 */
+#backgroundWrap {
   position: relative;
   width: 100%;
-  min-height: 1800px;
-  overflow: hidden;
+  max-width: 735px;
+  margin: 0 auto;
 }
 
-/* 각각의 도형 */
-.randomShape {
-  position: absolute;
-  width: 18%;
+#backgroundImage {
+  display: block;
+  width: 100%;
   height: auto;
-  cursor: none;
-  transition: transform 0.2s ease;
 }
 
-.randomShape:hover {
-  transform: scale(1.08);
+/* 도형별 투명 클릭 영역 */
+.pieceButton {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 10%;
 }
 
 /* 팝업 배경 */
@@ -157,31 +122,58 @@ html, body, * {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
   z-index: 9990;
+  background: rgba(0, 0, 0, 0.6);
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 /* 팝업 이미지 */
 #popupImage {
-  max-width: 90vw;
-  max-height: 85vh;
+  display: block;
+  max-width: 95vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
   object-fit: contain;
 }
 
 body.popupOpen {
-  overflow: hidden;
+  overflow: hidden !important;
 }
 
+/* 커스텀 마우스 커서 */
+#customCursor {
+  position: fixed;
+  width: 128px;
+  height: 36px;
+  left: 0;
+  top: 0;
+  background: url("./point.png") center / contain no-repeat;
+  pointer-events: none;
+  z-index: 999999;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+  will-change: left, top;
+}
 
+/* JavaScript가 준비된 후 기본 커서 숨김 */
+@media (pointer: fine) {
+  html.cursor-ready,
+  html.cursor-ready body,
+  html.cursor-ready body * {
+    cursor: none !important;
+  }
+}
 </style>
 </head>
 
 <body>
 
-  <div id="customCursor"></div>
-  
+<!-- 커스텀 커서 -->
+<div id="customCursor"></div>
+
 <!-- 첫 번째 화면 -->
 <div id="screen1">
   <img src="main.jpg" alt="모르면 간첩">
@@ -193,32 +185,38 @@ body.popupOpen {
   <div id="message"></div>
 </div>
 
-  <!-- 세 번째 페이지 -->
+<!-- 세 번째 화면 -->
 <div id="screen3">
-
-  <div id="screen3Header">
-    한국인으로서의 당신을 만들어줄 조각들입니다.<br>
-    조각 안에는 당신의 신분에 맞춘 가짜 추억들도 준비했습니다.<br>
-    클릭해보세요.
+  <div id="backgroundWrap">
+    <img
+      id="backgroundImage"
+      src="background.jpg"
+      alt="한국인으로서의 당신을 만들어줄 조각들"
+    >
+    <div id="pieceButtons"></div>
   </div>
-
-  <div id="shapeContainer"></div>
-
 </div>
 
 <!-- 팝업 -->
 <div id="popupOverlay" onclick="closePopup()">
   <img id="popupImage" alt="추억 정보">
 </div>
-  
+
 <script>
+
+/* =========================
+   두 번째 페이지 타자기
+========================= */
+
 const messages = [
   { text: "요원님, 좋은 아침입니다.\n\n", color: "pink" },
 
   { text: "대한민국(Republic of Korea)에 잠입할 준비는 잘 하고 계신가요?\n", color: "pink" },
 
   { text: "당신의 신분은 완벽히 준비해두었습니다.\n", color: "pink" },
-   { text: "김민지 (2004.12.25), 서울, 대한민국\n\n", color: "white2" },
+
+  { text: "김민지 (2004.12.25), 서울, 대한민국\n\n", color: "white2" },
+
   { text: "한국어와 기본적인 문화는 익히셨으리라 생각합니다.\n", color: "pink" },
 
   { text: "단, 당신에게는 한국에서 살아온 기억이 없습니다.\n", color: "pink" },
@@ -233,7 +231,7 @@ const messages = [
 ];
 
 let started = false;
-  let typingFinished = false;
+let typingFinished = false;
 
 function startTyping() {
   if (started) return;
@@ -254,6 +252,7 @@ async function typeMessages() {
   for (const message of messages) {
     const span = document.createElement("span");
     span.className = message.color;
+
     container.appendChild(span);
     container.appendChild(cursor);
 
@@ -265,44 +264,19 @@ async function typeMessages() {
       );
     }
 
-    await new Promise(resolve => setTimeout(resolve, 250));
+    await new Promise(resolve =>
+      setTimeout(resolve, 250)
+    );
   }
 
-  
-    cursor.remove();
+  cursor.remove();
   typingFinished = true;
 }
-}
 
+/* =========================
+   두 번째 → 세 번째 페이지
+========================= */
 
-/* 마우스 커서 따라다니기 */
-const customCursor = document.getElementById("customCursor");
-
-window.addEventListener("pointermove", function(e) {
-  customCursor.style.left = e.clientX + "px";
-  customCursor.style.top = e.clientY + "px";
-});
-
-/* 웹사이트에 마우스가 들어오면 표시 */
-document.addEventListener("pointerenter", function() {
-  customCursor.style.visibility = "visible";
-});
-
-/* 웹사이트에서 마우스가 나가면 숨기기 */
-document.addEventListener("pointerleave", function() {
-  customCursor.style.visibility = "hidden";
-});
-
-
-/* 도형과 연결된 팝업 이미지 */
-const shapeData = [
-  { shape: "shape1.png", popup: "piece1.png" },
-  { shape: "shape2.png", popup: "piece2.png" },
-  { shape: "shape3.png", popup: "piece3.png" },
-  { shape: "shape4.png", popup: "piece4.png" }
-];
-
-/* 두 번째 페이지에서 세 번째 페이지로 */
 document.getElementById("screen2").addEventListener("click", function() {
   if (!typingFinished) return;
 
@@ -311,74 +285,127 @@ document.getElementById("screen2").addEventListener("click", function() {
 
   document.body.style.overflow = "auto";
   window.scrollTo(0, 0);
-
-  createRandomShapes();
 });
 
-/* 랜덤 도형 생성 */
-function createRandomShapes() {
-  const container = document.getElementById("shapeContainer");
-  container.innerHTML = "";
+/* =========================
+   18개 도형 클릭 영역
+   좌표 기준: 735 × 2048
+========================= */
 
-  const columns = 3;
-  const rows = Math.ceil(shapeData.length / columns);
-  const cellHeight = 320;
+/*
+ x, y = 도형의 왼쪽 위 좌표
+ w, h = 클릭 영역의 너비와 높이
+*/
 
-  container.style.minHeight = Math.max(1500, rows * cellHeight + 200) + "px";
+const pieces = [
+  { x: 239, y: 191, w: 162, h: 114 },
+  { x: 575, y: 136, w: 114, h: 203 },
+  { x: 37,  y: 268, w: 209, h: 221 },
+  { x: 394, y: 377, w: 269, h: 202 },
+  { x: 62,  y: 628, w: 138, h: 231 },
+  { x: 315, y: 574, w: 346, h: 190 },
+  { x: 215, y: 794, w: 155, h: 195 },
+  { x: 422, y: 851, w: 220, h: 152 },
+  { x: 79,  y: 951, w: 125, h: 146 },
+  { x: 270, y: 1099,w: 192, h: 141 },
+  { x: 529, y: 1031,w: 148, h: 173 },
+  { x: 34,  y: 1164,w: 195, h: 246 },
+  { x: 277, y: 1293,w: 136, h: 231 },
+  { x: 531, y: 1306,w: 91,  h: 88 },
+  { x: 162, y: 1570,w: 112, h: 130 },
+  { x: 399, y: 1518,w: 244, h: 177 },
+  { x: 102, y: 1818,w: 128, h: 97 },
+  { x: 375, y: 1759,w: 149, h: 131 }
+];
 
-  const positions = [];
+/* 투명 클릭 영역 생성 */
+function createPieceButtons() {
+  const container = document.getElementById("pieceButtons");
 
-  for (let i = 0; i < shapeData.length; i++) {
-    const col = i % columns;
-    const row = Math.floor(i / columns);
+  pieces.forEach((piece, index) => {
+    const button = document.createElement("button");
 
-    positions.push({
-      x: col * (100 / columns) + Math.random() * 10,
-      y: row * cellHeight + Math.random() * 120
+    button.className = "pieceButton";
+    button.type = "button";
+    button.setAttribute("aria-label", "추억의 조각 " + (index + 1));
+
+    button.style.left = (piece.x / 735 * 100) + "%";
+    button.style.top = (piece.y / 2048 * 100) + "%";
+    button.style.width = (piece.w / 735 * 100) + "%";
+    button.style.height = (piece.h / 2048 * 100) + "%";
+
+    button.addEventListener("click", function(e) {
+      e.stopPropagation();
+      openPopup("piece" + (index + 1) + ".jpg");
     });
-  }
 
-  /* 배치 순서 섞기 */
-  positions.sort(() => Math.random() - 0.5);
-
-  shapeData.forEach((data, index) => {
-    const img = document.createElement("img");
-
-    img.src = data.shape;
-    img.className = "randomShape";
-    img.alt = "추억의 조각 " + (index + 1);
-
-    img.style.left = positions[index].x + "%";
-    img.style.top = positions[index].y + "px";
-
-    img.addEventListener("click", function() {
-      openPopup(data.popup);
-    });
-
-    container.appendChild(img);
+    container.appendChild(button);
   });
 }
 
-/* 팝업 열기 */
+createPieceButtons();
+
+/* =========================
+   팝업 열기 / 닫기
+========================= */
+
 function openPopup(imageName) {
-  document.getElementById("popupImage").src = imageName;
-  document.getElementById("popupOverlay").style.display = "flex";
+  const overlay = document.getElementById("popupOverlay");
+  const image = document.getElementById("popupImage");
+
+  image.src = imageName;
+  overlay.style.display = "flex";
   document.body.classList.add("popupOpen");
 }
 
-/* 팝업 닫기 */
 function closePopup() {
   document.getElementById("popupOverlay").style.display = "none";
   document.body.classList.remove("popupOpen");
 }
 
-/* 이미지 클릭 시 팝업 유지 */
 document.getElementById("popupImage").addEventListener("click", function(e) {
   e.stopPropagation();
 });
 
-  
-</script>
+/* ESC 키로 팝업 닫기 */
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closePopup();
+});
+
+/* =========================
+   커스텀 마우스 커서
+========================= */
+
+const customCursor = document.getElementById("customCursor");
+
+const cursorImage = new Image();
+cursorImage.src = "./point.png";
+
+cursorImage.onload = function() {
+  document.documentElement.classList.add("cursor-ready");
+};
+
+cursorImage.onerror = function() {
+  console.warn("point.png 파일을 불러올 수 없습니다.");
+};
+
+window.addEventListener("pointermove", function(e) {
+  if (e.pointerType === "touch") return;
+
+  customCursor.style.left = e.clientX + "px";
+  customCursor.style.top = e.clientY + "px";
+  customCursor.style.visibility = "visible";
+});
+
+document.addEventListener("mouseout", function(e) {
+  if (!e.relatedTarget) {
+    customCursor.style.visibility = "hidden";
+  }
+});
+
+window.addEventListener("blur", function() {
+  customCursor.style.visibility = "hidden";
+});
 
 </script>
 
