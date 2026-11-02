@@ -114,6 +114,65 @@ html, body, * {
   transform: translate(-50%, -50%);
 }
 
+  
+/* 세 번째 페이지 */
+#screen3 {
+  display: none;
+  background: #f345ed;
+  min-height: 100vh;
+  color: #000;
+}
+
+/* 상단 안내문 */
+#screen3Header {
+  padding: 45px 5.5% 10px;
+  font-size: clamp(13px, 1.5vw, 22px);
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+/* 도형이 배치되는 공간 */
+#shapeContainer {
+  position: relative;
+  width: 100%;
+  min-height: 1800px;
+  overflow: hidden;
+}
+
+/* 각각의 도형 */
+.randomShape {
+  position: absolute;
+  width: 18%;
+  height: auto;
+  cursor: none;
+  transition: transform 0.2s ease;
+}
+
+.randomShape:hover {
+  transform: scale(1.08);
+}
+
+/* 팝업 배경 */
+#popupOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9990;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 팝업 이미지 */
+#popupImage {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+body.popupOpen {
+  overflow: hidden;
+}
 
 
 </style>
@@ -216,6 +275,25 @@ document.addEventListener("pointerleave", function() {
 });
 
 
+<!-- 세 번째 페이지 -->
+<div id="screen3">
+
+  <div id="screen3Header">
+    한국인으로서의 당신을 만들어줄 조각들입니다.<br>
+    조각 안에는 당신의 신분에 맞춘 가짜 추억들도 준비했습니다.<br>
+    클릭해보세요.
+  </div>
+
+  <div id="shapeContainer"></div>
+
+</div>
+
+<!-- 팝업 -->
+<div id="popupOverlay" onclick="closePopup()">
+  <img id="popupImage" alt="추억 정보">
+</div>
+
+  
 </script>
 
 </script>
