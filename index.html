@@ -96,19 +96,24 @@ html, body, * {
   cursor: none !important;
 }
 
-/* 커스텀 커서 */
+
+/* 이미지 커서 */
 #customCursor {
   position: fixed;
   width: 128px;
   height: 36px;
-  background: url("./point.png") no-repeat center;
-  background-size: contain;
+  background-image: url("./point.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 128px 36px;
   pointer-events: none;
-  z-index: 99999;
+  z-index: 999999;
   left: 0;
   top: 0;
-  transform: translate(0, 0);
+  display: block;
+  transform: translate(-50%, -50%);
 }
+
 
 
 </style>
