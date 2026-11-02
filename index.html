@@ -192,8 +192,20 @@ async function typeMessages() {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
 
+  
   cursor.remove();
 }
+
+/* 커스텀 마우스 커서 */
+const customCursor = document.getElementById("customCursor");
+
+document.addEventListener("mousemove", function(e) {
+  customCursor.style.left = e.clientX + "px";
+  customCursor.style.top = e.clientY + "px";
+});
+
+</script>
+
 </script>
 
 </body>
