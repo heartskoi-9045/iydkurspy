@@ -196,13 +196,25 @@ async function typeMessages() {
   cursor.remove();
 }
 
-/* 커스텀 마우스 커서 */
+
+/* 마우스 커서 따라다니기 */
 const customCursor = document.getElementById("customCursor");
 
-document.addEventListener("mousemove", function(e) {
+window.addEventListener("pointermove", function(e) {
   customCursor.style.left = e.clientX + "px";
   customCursor.style.top = e.clientY + "px";
 });
+
+/* 웹사이트에 마우스가 들어오면 표시 */
+document.addEventListener("pointerenter", function() {
+  customCursor.style.visibility = "visible";
+});
+
+/* 웹사이트에서 마우스가 나가면 숨기기 */
+document.addEventListener("pointerleave", function() {
+  customCursor.style.visibility = "hidden";
+});
+
 
 </script>
 
