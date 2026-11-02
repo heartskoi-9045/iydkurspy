@@ -193,6 +193,24 @@ body.popupOpen {
   <div id="message"></div>
 </div>
 
+  <!-- 세 번째 페이지 -->
+<div id="screen3">
+
+  <div id="screen3Header">
+    한국인으로서의 당신을 만들어줄 조각들입니다.<br>
+    조각 안에는 당신의 신분에 맞춘 가짜 추억들도 준비했습니다.<br>
+    클릭해보세요.
+  </div>
+
+  <div id="shapeContainer"></div>
+
+</div>
+
+<!-- 팝업 -->
+<div id="popupOverlay" onclick="closePopup()">
+  <img id="popupImage" alt="추억 정보">
+</div>
+  
 <script>
 const messages = [
   { text: "요원님, 좋은 아침입니다.\n\n", color: "pink" },
@@ -217,6 +235,7 @@ const messages = [
 ];
 
 let started = false;
+  let typingFinished = false;
 
 function startTyping() {
   if (started) return;
@@ -252,7 +271,9 @@ async function typeMessages() {
   }
 
   
-  cursor.remove();
+    cursor.remove();
+  typingFinished = true;
+}
 }
 
 
@@ -275,23 +296,88 @@ document.addEventListener("pointerleave", function() {
 });
 
 
-<!-- 세 번째 페이지 -->
-<div id="screen3">
+/* 도형과 연결된 팝업 이미지 */
+const shapeData = [
+  { shape: "shape1.png", popup: "choco.png" },
+  { shape: "shape2.png", popup: "memory2.png" },
+  { shape: "shape3.png", popup: "memory3.png" },
+  { shape: "shape4.png", popup: "memory4.png" }
+];
 
-  <div id="screen3Header">
-    한국인으로서의 당신을 만들어줄 조각들입니다.<br>
-    조각 안에는 당신의 신분에 맞춘 가짜 추억들도 준비했습니다.<br>
-    클릭해보세요.
-  </div>
+/* 두 번째 페이지에서 세 번째 페이지로 */
+document.getElementById("screen2").addEventListener("click", function() {
+  if (!typingFinished) return;
 
-  <div id="shapeContainer"></div>
+  document.getElementById("screen2").style.display = "none";
+  document.getElementById("screen3").style.display = "block";
 
-</div>
+  document.body.style.overflow = "auto";
+  window.scrollTo(0, 0);
 
-<!-- 팝업 -->
-<div id="popupOverlay" onclick="closePopup()">
-  <img id="popupImage" alt="추억 정보">
-</div>
+  createRandomShapes();
+});
+
+/* 랜덤 도형 생성 */
+function createRandomShapes() {
+  const container = document.getElementById("shapeContainer");
+  container.innerHTML = "";
+
+  const columns = 3;
+  const rows = Math.ceil(shapeData.length / columns);
+  const cellHeight = 320;
+
+  container.style.minHeight = Math.max(1500, rows * cellHeight + 200) + "px";
+
+  const positions = [];
+
+  for (let i = 0; i < shapeData.length; i++) {
+    const col = i % columns;
+    const row = Math.floor(i / columns);
+
+    positions.push({
+      x: col * (100 / columns) + Math.random() * 10,
+      y: row * cellHeight + Math.random() * 120
+    });
+  }
+
+  /* 배치 순서 섞기 */
+  positions.sort(() => Math.random() - 0.5);
+
+  shapeData.forEach((data, index) => {
+    const img = document.createElement("img");
+
+    img.src = data.shape;
+    img.className = "randomShape";
+    img.alt = "추억의 조각 " + (index + 1);
+
+    img.style.left = positions[index].x + "%";
+    img.style.top = positions[index].y + "px";
+
+    img.addEventListener("click", function() {
+      openPopup(data.popup);
+    });
+
+    container.appendChild(img);
+  });
+}
+
+/* 팝업 열기 */
+function openPopup(imageName) {
+  document.getElementById("popupImage").src = imageName;
+  document.getElementById("popupOverlay").style.display = "flex";
+  document.body.classList.add("popupOpen");
+}
+
+/* 팝업 닫기 */
+function closePopup() {
+  document.getElementById("popupOverlay").style.display = "none";
+  document.body.classList.remove("popupOpen");
+}
+
+/* 이미지 클릭 시 팝업 유지 */
+document.getElementById("popupImage").addEventListener("click", function(e) {
+  e.stopPropagation();
+});
 
   
 </script>
